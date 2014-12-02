@@ -139,14 +139,12 @@ void paciente() {
 /*     Registro de tratamentos: código de identificação, nome do médico, nome do paciente, código de identificação da doença, exames adicionais (quais?), valor(es) da consulta e dos exames adicionais, haverá tempo de observação? (caso positivo, quanto tempo?), indicação de internação no hospital? (caso positivo, quanto tempo?);
  */
 
-void tratamentos() {
+//void tratamentos() {
 
-    struct reg {
-        int cod,
+//    struct reg {
+//        int cod,
 
-    }
-
-
+//    }
 
 
 
@@ -154,5 +152,7 @@ void tratamentos() {
 
 
 
-}
+
+
+//}
 
