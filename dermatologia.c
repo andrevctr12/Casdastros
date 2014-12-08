@@ -2,58 +2,99 @@
 //              Trabalho de Arquivos
 //
 //   André Victor Teixeira Lopes / 201411640020
-//   Elizane
-//   Larissa Roman
+//   Elizane Ferraz             / 201411640022
+//   Larissa Roman Françoso    / 201411640013
 //
 //
 
 #include <stdio.h>
 
 
-#define A 10
+#define A 3
 
-int i,contPacientes = 0;
+
+int i, j;
+int contPacientes = 0;
+int contMedicos = 0;
+int contDoencas = 0;
 
 //marcas
 
-int marca1 = 0,marca4 = 0;
+int marca1 = 0, marca4 = 0;
 
 //typedef structs:
 
+//num1()
+typedef struct {
+    int codID, nivel;
+    char nomeDoenca[50], descricao[500];
+}reg1;
+
+//num2()
+typedef struct{
+    int codID, nivel;
+    char descricao[300];
+}reg2;
+
+//num3()
+typedef struct {
+    char rua[50], bairro[30], cidade[30], estado[30], CEP[9];
+    int numero;
+}reg03;
+
+typedef struct {
+    int CRM, codPacientes[A];
+    char nomeMedico[50], nomePacientes[50], CPF[15], telefone[20];
+    reg03 endereco;
+}reg3;
+
+//num4()
 typedef struct {
 
     char medicamento[200], agentes[150], ambiente[200], outros[200];
 }reg04;
 
 typedef struct {
-    int CPF, telefone, idade, codPaciente;
-    char nomePaciente[50], endereco[100], genero, predGenetica[200], exames[200],resultados[150];
-    reg04 risco[A];
-}reg4;
-
-
+    char rua[50], bairro[30], cidade[30], estado[30], CEP[9];
+    int numero;
+}reg14;
 
 typedef struct {
-    int codID, codDoenca;
+    int idade, codPaciente;
+    char nomePaciente[50], genero, predGenetica[200], exames[200],resultados[150];
+    char CPF[15], telefone[20];
+    reg04 risco;
+    reg14 endereco;
+}reg4;
+
+//num5()
+typedef struct {
+    int codID, codDoenca, codPaciente, codMedico;
     float valorConsulta, valorExame;
-    char nomeMedico[30], nomePaciente[30],tempoObs[5], tempoInter[5], resp;
+    char tempoObs[5], tempoInter[5], resp;
 }reg5;
 
 //Declaração de structs:
 
+
+reg1 doencas[A];
+reg2 sintomas[A];
+reg3 medicos[A];
 reg4 pacientes[A];
 reg5 tratamentos[A];
 
 
 
+
 //Protótipo de funções:
 
-void sair(char);
+void sair();
+
 
 void num1();
 void num2();
 void num3();
-void num4();
+int num4();
 void num5();
 void num6();
 void num7();
@@ -62,32 +103,32 @@ void num8();
 int main() {
 
     int op;
-    char ok;
-
-    printf("1. Cadastrar doenças\n");
-    printf("2. Cadastrar sintomas\n");
-    printf("3. Cadastrar médicos\n");
-    printf("4. Cadastrar pacientes\n");
-    printf("5. Cadastrar tratamentos\n");
-    printf("6. Cadastrar medicamentos\n");
-    printf("7. Cadastrar exames\n");
-
-
-
-    printf("X. Sair\n\n> ");
-
 
     do {
+        printf("1. Cadastrar doenças\n");
+        printf("2. Cadastrar sintomas\n");
+        printf("3. Cadastrar médicos\n");
+        printf("4. Cadastrar pacientes\n");
+        printf("5. Cadastrar tratamentos\n");
+        printf("6. Cadastrar medicamentos\n");
+        printf("7. Cadastrar exames\n");
 
-        scanf("%d",&op);
+
+
+        printf("9. Sair\n\n> ");
+
+        scanf(" %d",&op);
 
         switch (op) {
             case 1:
+                num1();
                 marca1 = 1;
                 break;
             case 2:
+                num2();
                 break;
             case 3:
+                num3();
                 break;
             case 4:
                 num4();
@@ -98,7 +139,7 @@ int main() {
 
                     printf("Você não tem nenhuma doença cadastrada. Cadastre para continuar!\n\n");
 
-                    //num1();
+                    num1();
                     marca1 = 1;
                     num5();
 
@@ -119,9 +160,11 @@ int main() {
             case 8:
                 break;
             default:
+                if (op != 9)
+                    printf("Opcao invalida!\n\n");
                 break;
         }
-    } while (op != 'X');
+    } while (op != 9);
 
 
 
@@ -130,12 +173,22 @@ int main() {
 
 
 
+void listaPacientes() {
+
+    for (i = 0; i < A; i++) {
+        printf("%d. ", i + 1);
+        puts(pacientes[i].nomePaciente);
+    }
 
 
-void sair(char ok) {
+}
 
-    printf("Você deseja sair? (S/N)");
-    scanf("%s",&ok);
+void sair() {
+    char ok;
+    printf("Você deseja sair deste cadastramento? (S/N)");
+    scanf(" %c",&ok);
+    if (ok == 'S' || ok == 's')
+        i = A;
 
 }
 
@@ -148,7 +201,195 @@ void sair(char ok) {
 
  */
 
-void num4() {
+void num1() {
+
+
+    for(i = contDoencas; i < A; i++) {
+        doencas[i].codID = i + 1;
+        printf("Codigo de identificacao: %d \n",doencas[i].codID);
+
+        printf("Informe o nome da doenca \n");
+        fflush(stdin);
+        gets(doencas[i].nomeDoenca);
+        printf("Descreva a doenca \n");
+        fflush(stdin);
+        gets(doencas[i].descricao);
+
+        do {
+
+            printf("Informe o nivel de seriedade da doenca\n");
+            printf("1. Baixo \n2. Medio \n3. Alto \n");
+            scanf("%d",&doencas[i].nivel);
+
+
+            switch (doencas[i].nivel) {
+                case 1:
+                    printf("\n1. Baixo\n");
+                    break;
+                case 2:
+                    printf("\n2. Medio\n");
+                    break;
+                case 3:
+                    printf("\n3. Alto\n");
+                    break;
+                default:
+                    printf("Opcao invalida\n");
+            }
+
+        } while (doencas[i].nivel <= 0 || doencas[i].nivel > 3);
+
+
+
+        contDoencas += 1;
+
+        sair();
+    }
+
+}
+
+
+
+void num2() {
+
+    for (i = 0; i < A; i++) {
+        sintomas[i].codID = i + 1;
+        printf("Codigo de identificacao: %d\n",sintomas[i].codID);
+        fflush(stdin);
+        printf("Descreva os sintomas\n");
+        gets(sintomas[i].descricao);
+
+
+
+        do {
+
+            printf("Informe o nivel de severidade da doenca\n");
+            printf("1. Baixo \n2. Medio \n3. Alto \n");
+            scanf("%d",&sintomas[i].nivel);
+
+            switch (sintomas[i].nivel) {
+                case 1:
+                    printf("\n1. Baixo\n");
+                    break;
+                case 2:
+                    printf("\n2. Medio\n");
+                    break;
+                case 3:
+                    printf("\n3. Alto\n");
+                    break;
+                default:
+                    printf("Opcao invalida\n");
+            }
+
+        } while (sintomas[i].nivel <= 0 || sintomas[i].nivel > 3);
+
+        sair();
+
+
+    }
+
+}
+
+
+void num3() {
+
+    int cod, op;
+    char ok;
+
+    for (i = contMedicos; i < A; i++) {
+
+        printf("Digite o CRM:\n");
+        scanf("%d", &medicos[i].CRM);
+        printf("Digite o nome do Medico:\n");
+        gets(medicos[i].nomeMedico);
+        printf("Informe o CPF: \n");
+        scanf("%s", medicos[i].CPF);
+        printf("Digite o Telefone do medico: \n");
+        scanf("%s", medicos[i].telefone);
+
+        printf("Digite o endereco da clinica/hospital: \n");
+        printf("rua:\n");
+        fflush(stdin);
+        gets(medicos[i].endereco.rua);
+        printf("Numero:\n");
+        scanf("%d", &medicos[i].endereco.numero);
+        printf("Bairro:\n");
+        fflush(stdin);
+        gets(medicos[i].endereco.bairro);
+        printf("Cidade:\n");
+        fflush(stdin);
+        gets(medicos[i].endereco.cidade);
+        printf("Estado:\n");
+        fflush(stdin);
+        gets(medicos[i].endereco.estado);
+        printf("CEP:\n");
+        scanf("%s", medicos[i].endereco.CEP);
+
+
+        printf("Informe o codigo de identificacao dos pacientes atendidos pelo medico\n");
+
+        for (j = 0; j < A; j++) {
+
+            printf("Codigo: ");
+            scanf("%d",&cod);
+
+            cod = cod - 1;
+            if (contPacientes <= cod) {
+                do {
+                    printf("Paciente não cadastrado.\n1. Cadastrar?\n2. Digitar outro\n> ");
+                    scanf("%d", &op);
+                    switch (op) {
+                        case 1:
+                            num4();
+                            marca4 = 1;
+                            printf("Digite outro codigo de paciente: ");
+                            scanf("%d", &cod);
+                            cod = cod - 1;
+                            break;
+                        case 2:
+                            printf("Digite outro codigo de paciente: ");
+                            scanf("%d", &cod);
+                            cod = cod - 1;
+                        default:
+                            printf("Digite novamente\n");
+                            break;
+                    }
+                } while (contPacientes <= cod);
+
+            }
+
+            printf("Nome do paciente: ");
+            puts(pacientes[cod].nomePaciente);
+
+            medicos[i].codPacientes[j] = cod;
+
+            printf("Você deseja informar mais algum paciente? (S/N)");
+            scanf(" %c",&ok);
+            if (ok != 'S' || ok != 's')
+                j = A;
+
+        }
+
+        printf("Nome e CPF de todos os pacientes atendidos pelo medico:");
+
+        for (j = 0; j < A; j++) {
+
+            printf("Codigo: %d\n",medicos[i].codPacientes[j]);
+            printf("Nome do paciente: ");
+            puts(pacientes[medicos[i].codPacientes[j]].nomePaciente);
+            printf("CPF do paciente: ");
+            printf("%s\n", pacientes[medicos[i].codPacientes[j]].CPF);
+
+        }
+
+        contMedicos += 1;
+        sair();
+    }
+
+}
+
+
+
+int num4() {
 
     char ok;
 
@@ -158,7 +399,7 @@ void num4() {
         printf("Código do Paciente: '%d'\n", pacientes[i].codPaciente);
 
         printf("Digite o CPF do paciente: \n");
-        scanf("%d", &pacientes[i].CPF);
+        scanf("%s", pacientes[i].CPF);
         printf("Digite o nome do paciente: \n");
         fflush(stdin);
         gets(pacientes[i].nomePaciente);
@@ -167,11 +408,23 @@ void num4() {
         printf("Qual o genero do paciente? (M/F) \n");
         scanf("%c", &pacientes[i].genero);
         printf("Digite o telefone do paciente: \n");
-        scanf("%d", &pacientes[i].telefone);
+        scanf("%s", pacientes[i].telefone);
+
         printf("Digite o endereco do paciente: \n");
-        fflush(stdin);
-        gets(pacientes[i].endereco);
-        printf("Predisposicao Genetica do paciente: \n");
+        printf("rua:\n");
+        gets(pacientes[i].endereco.rua);
+        printf("Numero:\n");
+        scanf("%d", &pacientes[i].endereco.numero);
+        printf("Bairro:\n");
+        gets(pacientes[i].endereco.bairro);
+        printf("Cidade:\n");
+        gets(pacientes[i].endereco.cidade);
+        printf("Estado:\n");
+        gets(pacientes[i].endereco.estado);
+        printf("CEP:\n");
+        scanf("%s", pacientes[i].endereco.CEP);
+
+        printf("Predisposicao Genetica do paciente:\n");
         fflush(stdin);
         gets(pacientes[i].predGenetica);
         printf("Há algum risco associado ao paciente?\nJá toma algum medicamento?\nEstá exposto a agentes nocivos à saúde?\nTrabalha em ambiente insalubre?\nDentre outros\n");
@@ -181,24 +434,34 @@ void num4() {
         if (ok == 's' || ok == 'S') {
 
             printf("Toma algum medicamento?\n");
-            gets(pacientes[i].risco[i].medicamento);
+            fflush(stdin);
+            gets(pacientes[i].risco.medicamento);
             printf("Está exposto a agentes nocivos à saúde?\n");
-            gets(pacientes[i].risco[i].agentes);
+            fflush(stdin);
+            gets(pacientes[i].risco.agentes);
             printf("Trabalha em ambiente insalubre?\n");
-            gets(pacientes[i].risco[i].ambiente);
+            fflush(stdin);
+            gets(pacientes[i].risco.ambiente);
             printf("Outros?\n");
-            gets(pacientes[i].risco[i].outros);
+            fflush(stdin);
+            gets(pacientes[i].risco.outros);
 
         }
 
         printf("Quais exames ja foram realizados?\n");
+        fflush(stdin);
         gets(pacientes[i].exames);
-        printf("Quais os resultados de exames anteriores?\n\n");
+        printf("Quais os resultados de exames anteriores?\n");
+        fflush(stdin);
         gets(pacientes[i].resultados);
 
         contPacientes += 1;
+        sair();
+
 
     }
+
+    return 0;
 
 }
 
@@ -208,94 +471,117 @@ void num4() {
 /*     Registro de tratamentos: código de identificação, nome do médico, nome do paciente, código de identificação da doença, exames adicionais (quais?), valor(es) da consulta e dos exames adicionais, haverá tempo de observação? (caso positivo, quanto tempo?), indicação de internação no hospital? (caso positivo, quanto tempo?);
  */
 
-/*
-void tratamentos() {
-
-    char escolha;
-
-    struct reg {
-        char nomeMedico[100], exames[300], observ[200];
-        // char nomePaciente[100] // pegar o nome dos outros registros?
-        int codMedico, tempoObserv,internacao,tempoInternacao;
-        float valorConsulta, valorExames = 0;
-        // int codIdentDoenca // pegar do outro registro?
-    }tratamento[A];
-
-    for(i = 0; i < A; i++) {
-
-        tratamento[i].codMedico = i + 1;
-        printf("Código do Médico: %d", tratamento[i].codMedico);
-
-        printf("Digite o nome do Médico: \n");
-        fflush(stdin);
-        gets(tratamento[i].nomeMedico);
-
-        //nome do paciente
-        //Codigo de identificacao da doenca
-
-        printf("Exames adicionais? (S/N)\n");
-        scanf("%c", &escolha);
-        if ((escolha == "S") | (escolha == "s") | (escolha == "Sim") | (escolha == "sim")) {
-            fflush(stdin);
-            gets(tratamento[i].exames);
-            printf("Qual o valor dos exames adicionais?");
-            scanf("%f",&tratamento[i].valorExames);
-
-        }
-
-
-        printf("Digite a idade do paciente: \n");
-        scanf("%d", &paciente[i].idade);
-
-    }
-
- }
-
-*/
 
 void num5() {
 
-
     char ok;
-    int i, cod, escolha;
+    int cod, op;
 
     for (i = 0; i < A; i++) {
 
         tratamentos[i].codID = i + 1;
         printf("Codigo de identificacao:  '%d'\n", tratamentos[i].codID);
 
-        //printf("Informe o codigo de identificacao da doenca:\n");
-        //scanf("%d", &tratamentos[i].codDoenca);
-        //printf("Codigo de identificacao da doenca: %d\n", tratamentos[i].cod_doenca);
 
-        printf("Informe o codigo de identificacao do paciente:\n");
+        printf("Informe o codigo de identificacao da doenca: ");
         scanf("%d",&cod);
 
         cod = cod - 1;
-        if (contPacientes < cod) {
+        if (contDoencas <= cod) {
             do {
-            printf("Paciente não cadastrado.\n1. Cadastrar?\n2. Digitar outro\n> ");
-            scanf("%d", &escolha);
-                switch (escolha) {
+                printf("Doenca não cadastrada.\n1. Cadastrar?\n2. Digitar outra\n> ");
+                scanf("%d", &op);
+                switch (op) {
                     case 1:
                         num4();
                         marca4 = 1;
+                        printf("Digite outro codigo de doenca: ");
+                        scanf("%d", &cod);
+                        cod = cod - 1;
                         break;
                     case 2:
-                        printf("Digite outro codigo de paciente:");
+                        printf("Digite outro codigo de doenca: ");
                         scanf("%d", &cod);
+                        cod = cod - 1;
                     default:
                         printf("Digite novamente\n");
                         break;
                 }
-            } while (contPacientes < cod);
-        }
-            printf("Nome do paciente: ");
-            printf("%s",pacientes[cod].nomePaciente);
+            } while (contDoencas <= cod);
 
-        fflush(stdin);
-        printf("Nome do medico:\n");
-        gets(tratamentos[i].nomeMedico);
+        }
+
+        printf("Nome da doenca: ");
+        puts(doencas[cod].nomeDoenca);
+
+        tratamentos[i].codDoenca = cod;
+
+        printf("Informe o codigo de identificacao do paciente: ");
+        scanf("%d",&cod);
+
+        cod = cod - 1;
+        if (contPacientes <= cod) {
+            do {
+                printf("Paciente não cadastrado.\n1. Cadastrar?\n2. Digitar outro\n> ");
+                scanf("%d", &op);
+                switch (op) {
+                    case 1:
+                        num4();
+                        marca4 = 1;
+                        printf("Digite outro codigo de paciente: ");
+                        scanf("%d", &cod);
+                        cod = cod - 1;
+                        break;
+                    case 2:
+                        printf("Digite outro codigo de paciente: ");
+                        scanf("%d", &cod);
+                        cod = cod - 1;
+                    default:
+                        printf("Digite novamente\n");
+                        break;
+                }
+            } while (contPacientes <= cod);
+
+        }
+
+        printf("Nome do paciente: ");
+        puts(pacientes[cod].nomePaciente);
+
+        tratamentos[i].codPaciente = cod;
+
+        printf("Informe o codigo de identificacao do medico: ");
+        scanf("%d",&cod);
+
+        cod = cod - 1;
+        if (contMedicos <= cod) {
+            do {
+                printf("Medico não cadastrado.\n1. Cadastrar?\n2. Digitar outro\n> ");
+                scanf("%d", &op);
+                switch (op) {
+                    case 1:
+                        num4();
+                        marca4 = 1;
+                        printf("Digite outro codigo de medico: ");
+                        scanf("%d", &cod);
+                        cod = cod - 1;
+                        break;
+                    case 2:
+                        printf("Digite outro codigo de medico: ");
+                        scanf("%d", &cod);
+                        cod = cod - 1;
+                    default:
+                        printf("Digite novamente\n");
+                        break;
+                }
+            } while (contMedicos <= cod);
+
+        }
+
+        printf("Nome do medico: ");
+        puts(medicos[cod].nomeMedico);
+
+        tratamentos[i].codMedico = cod;
+
         printf("Informe o valor da consulta:\n");
         scanf("%f", & tratamentos[i].valorConsulta);
 
@@ -306,10 +592,10 @@ void num5() {
             printf("Informe o valor dos exames:");
             scanf("%f", & tratamentos[i].valorExame);
         }
-            printf("Havera tempo de observacao (S/N)? \n");
-            scanf("%c \n", & tratamentos[i].resp);
+        printf("Havera tempo de observacao (S/N)? \n");
+        scanf(" %c", & tratamentos[i].resp);
 
-        while(tratamentos[i].resp=='s') {
+        if (tratamentos[i].resp=='s') {
 
             printf ("Informe o tempo de observacao");
             scanf("%s", tratamentos[i].tempoObs);
@@ -321,7 +607,7 @@ void num5() {
         printf("Existe tempo de internacao (s/n):");
         fflush(stdin);
         scanf("%c \n ", & tratamentos[i].resp);
-        while (tratamentos[i].resp=='s') {
+        if (tratamentos[i].resp=='s') {
 
             printf("Quanto tempo de internacao?");
             scanf("%s", tratamentos[i].tempoInter);
@@ -329,5 +615,7 @@ void num5() {
             printf("Quanto tempo de internacao?");
             scanf("%s", tratamentos[i].tempoInter);
         }
+
+    sair();
     }
 }
