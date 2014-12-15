@@ -20,7 +20,7 @@ int contDoencas = 0;
 
 //marcas
 
-int marca1 = 0, marca4 = 0;
+int marca1 = 0, marca3, marca4 = 0;
 
 //typedef structs:
 
@@ -91,13 +91,13 @@ reg5 tratamentos[A];
 void sair();
 
 
-void num1();
-void num2();
-void num3();
-int num4();
-void num5();
-void num6();
-void num7();
+void doenca();
+void sintoma();
+void medico();
+void paciente();
+void tratamento();
+void medicamento();
+void exame();
 void num8();
 
 int main() {
@@ -121,17 +121,18 @@ int main() {
 
         switch (op) {
             case 1:
-                num1();
+                doenca();
                 marca1 = 1;
                 break;
             case 2:
-                num2();
+                sintoma();
                 break;
             case 3:
-                num3();
+                medico();
+                marca3 = 1;
                 break;
             case 4:
-                num4();
+                paciente();
                 marca4 = 1;
                 break;
             case 5:
@@ -139,19 +140,19 @@ int main() {
 
                     printf("Você não tem nenhuma doença cadastrada. Cadastre para continuar!\n\n");
 
-                    num1();
+                    doenca();
                     marca1 = 1;
-                    num5();
+                    tratamento();
 
                 }
                 else if (marca4 == 0) {
                     printf("Você não tem nenhum paciente cadastrado. Cadastre para continuar!\n\n");
-                    num4();
+                    paciente();
                     marca4 = 1;
-                    num5();
+                    tratamento();
                 }
                 else
-                    num5();
+                    tratamento();
                 break;
             case 6:
                 break;
@@ -201,7 +202,7 @@ void sair() {
 
  */
 
-void num1() {
+void doenca() {
 
 
     for(i = contDoencas; i < A; i++) {
@@ -249,7 +250,7 @@ void num1() {
 
 
 
-void num2() {
+void sintoma() {
 
     for (i = 0; i < A; i++) {
         sintomas[i].codID = i + 1;
@@ -290,7 +291,7 @@ void num2() {
 }
 
 
-void num3() {
+void medico() {
 
     int cod, op;
     char ok;
@@ -339,7 +340,7 @@ void num3() {
                     scanf("%d", &op);
                     switch (op) {
                         case 1:
-                            num4();
+                            paciente();
                             marca4 = 1;
                             printf("Digite outro codigo de paciente: ");
                             scanf("%d", &cod);
@@ -389,7 +390,7 @@ void num3() {
 
 
 
-int num4() {
+void paciente() {
 
     char ok;
 
@@ -461,8 +462,6 @@ int num4() {
 
     }
 
-    return 0;
-
 }
 
 
@@ -472,7 +471,7 @@ int num4() {
  */
 
 
-void num5() {
+void tratamento() {
 
     char ok;
     int cod, op;
@@ -493,8 +492,8 @@ void num5() {
                 scanf("%d", &op);
                 switch (op) {
                     case 1:
-                        num4();
-                        marca4 = 1;
+                        doenca();
+                        marca1 = 1;
                         printf("Digite outro codigo de doenca: ");
                         scanf("%d", &cod);
                         cod = cod - 1;
@@ -526,7 +525,7 @@ void num5() {
                 scanf("%d", &op);
                 switch (op) {
                     case 1:
-                        num4();
+                        paciente();
                         marca4 = 1;
                         printf("Digite outro codigo de paciente: ");
                         scanf("%d", &cod);
@@ -559,8 +558,8 @@ void num5() {
                 scanf("%d", &op);
                 switch (op) {
                     case 1:
-                        num4();
-                        marca4 = 1;
+                        medico();
+                        marca3 = 1;
                         printf("Digite outro codigo de medico: ");
                         scanf("%d", &cod);
                         cod = cod - 1;
