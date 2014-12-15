@@ -106,6 +106,7 @@ int main() {
     int op;
 
     do {
+        printf("Escolha a opcao desejada:\n");
         printf("1. Cadastrar doenças\n");
         printf("2. Cadastrar sintomas\n");
         printf("3. Cadastrar médicos\n");
@@ -187,7 +188,7 @@ void listaPacientes() {
 
 void sair() {
     char ok;
-    printf("Você deseja sair deste cadastramento? (S/N)");
+    printf("Você deseja sair deste cadastramento? (S/N)\n");
     scanf(" %c",&ok);
     if (ok == 'S' || ok == 's')
         i = A;
@@ -300,16 +301,19 @@ void medico() {
     for (i = contMedicos; i < A; i++) {
 
         printf("Digite o CRM:\n");
+        fflush(stdin);
         scanf("%d", &medicos[i].CRM);
         printf("Digite o nome do Medico:\n");
+        fflush(stdin);
         gets(medicos[i].nomeMedico);
         printf("Informe o CPF: \n");
         scanf("%s", medicos[i].CPF);
         printf("Digite o Telefone do medico: \n");
+        fflush(stdin);
         scanf("%s", medicos[i].telefone);
 
-        printf("Digite o endereco da clinica/hospital: \n");
-        printf("rua:\n");
+        printf("Digite o endereco da clinica/hospital\n");
+        printf("Rua:\n");
         fflush(stdin);
         gets(medicos[i].endereco.rua);
         printf("Numero:\n");
@@ -408,22 +412,29 @@ void paciente() {
         printf("Digite a idade do paciente: \n");
         scanf("%d", &pacientes[i].idade);
         printf("Qual o genero do paciente? (M/F) \n");
+        fflush(stdin);
         scanf("%c", &pacientes[i].genero);
         printf("Digite o telefone do paciente: \n");
+        fflush(stdin);
         scanf("%s", pacientes[i].telefone);
 
-        printf("Digite o endereco do paciente: \n");
-        printf("rua:\n");
+        printf("Digite o endereco do Paciente\n");
+        printf("Rua:\n");
+        fflush(stdin);
         gets(pacientes[i].endereco.rua);
         printf("Numero:\n");
         scanf("%d", &pacientes[i].endereco.numero);
         printf("Bairro:\n");
+        fflush(stdin);
         gets(pacientes[i].endereco.bairro);
         printf("Cidade:\n");
+        fflush(stdin);
         gets(pacientes[i].endereco.cidade);
         printf("Estado:\n");
+        fflush(stdin);
         gets(pacientes[i].endereco.estado);
         printf("CEP:\n");
+        fflush(stdin);
         scanf("%s", pacientes[i].endereco.CEP);
 
         printf("Predisposicao Genetica do paciente:\n");
@@ -431,6 +442,7 @@ void paciente() {
         gets(pacientes[i].predGenetica);
         printf("Há algum risco associado ao paciente?\nJá toma algum medicamento?\nEstá exposto a agentes nocivos à saúde?\nTrabalha em ambiente insalubre?\nDentre outros\n");
         printf("(S/N)\n");
+        fflush(stdin);
         scanf(" %c", &ok);
 
         if (ok == 's' || ok == 'S') {
@@ -519,6 +531,9 @@ void tratamento() {
         printf("Informe o codigo de identificacao do paciente: ");
         scanf("%d",&cod);
 
+        if(marca4 == 0) {
+
+        }
         cod = cod - 1;
         if (contPacientes <= cod) {
             do {
