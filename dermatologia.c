@@ -206,47 +206,65 @@ void sair() {
 
 void doenca() {
 
+    FILE *arqDoencas;
+    arqDoencas = fopen("arqDoencas.bin","a+b");
 
-    for(i = contDoencas; i < A; i++) {
-        doencas[i].codID = i + 1;
-        printf("Codigo de identificacao: %d \n",doencas[i].codID);
+    if (arqDoencas == NULL) {
 
-        printf("Informe o nome da doenca \n");
-        fflush(stdin);
-        gets(doencas[i].nomeDoenca);
-        printf("Descreva a doenca \n");
-        fflush(stdin);
-        gets(doencas[i].descricao);
-
-        do {
-
-            printf("Informe o nivel de seriedade da doenca\n");
-            printf("1. Baixo \n2. Medio \n3. Alto \n");
-            scanf("%d",&doencas[i].nivel);
-
-
-            switch (doencas[i].nivel) {
-                case 1:
-                    printf("\n1. Baixo\n");
-                    break;
-                case 2:
-                    printf("\n2. Medio\n");
-                    break;
-                case 3:
-                    printf("\n3. Alto\n");
-                    break;
-                default:
-                    printf("Opcao invalida\n");
-            }
-
-        } while (doencas[i].nivel <= 0 || doencas[i].nivel > 3);
-
-
-
-        contDoencas += 1;
-
-        sair();
+        printf("Erro na abertura do Arquivo!\n");
+        exit(1);
     }
+
+    else {
+
+        for(i = contDoencas; i < A; i++) {
+            doencas[i].codID = i + 1;
+            fprintf(arqDoencas, doencas[i].codID);
+            printf("Codigo de identificacao: %d \n",doencas[i].codID);
+
+            printf("Informe o nome da doenca:\n> ");
+            fflush(stdin);
+            gets(doencas[i].nomeDoenca);
+            fprintf(arqDoencas, doencas[i].nomeDoenca);
+            printf("Descreva a doenca:\n> ");
+            fflush(stdin);
+            gets(doencas[i].descricao);
+            fprintf(arqDoencas, doencas[i].descricao);
+
+            do{
+
+                printf("Informe o nivel de seriedade da doenca\n");
+                printf("1. Baixo \n2. Medio \n3. Alto \n");
+                scanf("%d",&doencas[i].nivel);
+                fprintf(arqDoencas, doencas[i].nivel);
+
+                switch (doencas[i].nivel) {
+                    case 1:
+                        printf("\n1. Baixo\n");
+                        break;
+                    case 2:
+                        printf("\n2. Medio\n");
+                        break;
+                    case 3:
+                        printf("\n3. Alto\n");
+                        break;
+                    default:
+                        printf("Opcao invalida\n");
+                }
+
+            } while (doencas[i].nivel <= 0 || doencas[i].nivel > 3);
+
+
+
+            contDoencas += 1;
+            fprintf(arqDoencas, contDoencas);
+            sair();
+        }
+    }
+
+
+
+    fclose(arqDoencas);
 
 }
 
@@ -258,7 +276,7 @@ void sintoma() {
         sintomas[i].codID = i + 1;
         printf("Codigo de identificacao: %d\n",sintomas[i].codID);
         fflush(stdin);
-        printf("Descreva os sintomas\n");
+        printf("Descreva os sintomas\n> ");
         gets(sintomas[i].descricao);
 
 
@@ -300,34 +318,34 @@ void medico() {
 
     for (i = contMedicos; i < A; i++) {
 
-        printf("Digite o CRM:\n");
+        printf("Digite o CRM:\n> ");
         fflush(stdin);
         scanf("%d", &medicos[i].CRM);
-        printf("Digite o nome do Medico:\n");
+        printf("\nDigite o nome do Medico:\n> ");
         fflush(stdin);
         gets(medicos[i].nomeMedico);
-        printf("Informe o CPF: \n");
+        printf("\nInforme o CPF:\n> ");
         scanf("%s", medicos[i].CPF);
-        printf("Digite o Telefone do medico: \n");
+        printf("\nDigite o Telefone do medico:\n> ");
         fflush(stdin);
         scanf("%s", medicos[i].telefone);
 
-        printf("Digite o endereco da clinica/hospital\n");
-        printf("Rua:\n");
+        printf("\n\nDigite o endereco da clinica/hospital\n");
+        printf("\nRua: ");
         fflush(stdin);
         gets(medicos[i].endereco.rua);
-        printf("Numero:\n");
+        printf("\nNumero: ");
         scanf("%d", &medicos[i].endereco.numero);
-        printf("Bairro:\n");
+        printf("\nBairro: ");
         fflush(stdin);
         gets(medicos[i].endereco.bairro);
-        printf("Cidade:\n");
+        printf("\nCidade: ");
         fflush(stdin);
         gets(medicos[i].endereco.cidade);
-        printf("Estado:\n");
+        printf("\nEstado: ");
         fflush(stdin);
         gets(medicos[i].endereco.estado);
-        printf("CEP:\n");
+        printf("\nCEP: ");
         scanf("%s", medicos[i].endereco.CEP);
 
 
