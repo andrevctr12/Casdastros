@@ -208,8 +208,10 @@ int main() {
                     tratamento5();
                 break;
             case 6:
+                medicamento6();
                 break;
             case 7:
+                exame7();
                 break;
             case 8:
                 break;
