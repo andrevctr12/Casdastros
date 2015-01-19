@@ -20,7 +20,6 @@
 
 long int total;
 int cont;
-int contSair;
 int contArq;
 int i, j;
 int contPacientes = 0;
@@ -88,8 +87,8 @@ struct reg5 {
 
 //medicamento6()
 struct reg6 {
-    int codID, faixa_etaria;
-    char nome_medicamento[20], indicacao[20], posologia[30], contra_indicacao[20];
+    int codID, faixaEtaria;
+    char nomeMedicamento[TAM2], indicacao[TAM3], posologia[TAM3], contraIndicacao[TAM3];
     float valor;
 };
 
@@ -125,7 +124,7 @@ int REG7 = sizeof (struct reg7);
 
 //PROTÓTIPO DE FUNÇÕES
 
-void sair();
+int sair();
 int doenca1();
 int sintoma2();
 int medico3();
@@ -260,13 +259,13 @@ void listaPacientes() {
 
 
 
-void sair() {
+int sair() {
     char ok;
     printf("Você deseja sair deste cadastramento? (S/N)\n");
     scanf(" %c",&ok);
     if (ok == 'S' || ok == 's')
-        cont = MAXREG;
-
+        return 1;
+    return 0;
 }
 
 
@@ -405,6 +404,7 @@ int sintoma2() {
                     break;
                 default:
                     printf("Opcao invalida\n\n");
+                    break;
             }
 
         } while (sintomas[cont].nivel <= 0 || sintomas[cont].nivel > 3);
@@ -412,17 +412,16 @@ int sintoma2() {
 
 
         cont++;
-        contSair = cont;
 
-        if (cont != MAXREG)
+        if (cont != MAXREG) {
 
-            sair();
+            if (sair() == 1)
+                break;
+        }
 
         limparBuffer();
 
     }
-
-    cont = contSair;
 
     if (cont > 0) {
 
@@ -741,17 +740,16 @@ int paciente4() {
 
 
         cont++;
-        contSair = cont;
 
-        if (cont != MAXREG)
+        if (cont != MAXREG) {
 
-            sair();
+            if (sair() == 1)
+                break;
+        }
 
         limparBuffer();
 
     }
-
-    cont = contSair;
 
     if (cont > 0) {
 
@@ -946,7 +944,7 @@ int medicamento6() {
         printf ("\n Codigo do exame: %d \n", medicamentos[i].codID);
         printf("Nome do medicamento \n");
 
-        gets(medicamentos[i].nome_medicamento);
+        gets(medicamentos[i].nomeMedicamento);
 
         printf("Para quais pacientes o medicamento e indicado?\n");
         gets(medicamentos[i].indicacao);
@@ -954,10 +952,10 @@ int medicamento6() {
         printf("Informe a posologia \n");
         gets(medicamentos[i].posologia);
         printf("Informe a faixa etaria indicada para o uso do medicamento:\n");
-        scanf("%d", &medicamentos[i].faixa_etaria);
+        scanf("%d", &medicamentos[i].faixaEtaria);
 
         printf("Para quais pacientes o medicamento eh contra indicado?\n");
-        gets(medicamentos[i].contra_indicacao);
+        gets(medicamentos[i].contraIndicacao);
 
     }
 
