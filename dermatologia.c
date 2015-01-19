@@ -19,7 +19,8 @@
 
 
 long int total;
-int cont = 0;
+int cont;
+int contSair;
 int contArq;
 int i, j;
 int contPacientes = 0;
@@ -125,24 +126,24 @@ int REG7 = sizeof (struct reg7);
 //PROTÓTIPO DE FUNÇÕES
 
 void sair();
-void doenca1();
+int doenca1();
 int sintoma2();
-void medico3();
-void paciente4();
-void tratamento5();
-void medicamento6();
-void exame7();
-void num8();
+int medico3();
+int paciente4();
+int tratamento5();
+int medicamento6();
+int exame7();
+void listaPacientes();
 
 //ARQUIVOS
 
-FILE *doencaArq;
-FILE *sintomasArq;
-FILE *medicoArq;
-FILE *pacienteArq;
-FILE *tratamentoArq;
-FILE *medicamentoArq;
-FILE *exameArq;
+FILE *doencaBin;
+FILE *sintomaBin;
+FILE *medicoBin;
+FILE *pacienteBin;
+FILE *tratamentoBin;
+FILE *medicamentoBin;
+FILE *exameBin;
 
 int main() {
 
@@ -214,6 +215,7 @@ int main() {
                 exame7();
                 break;
             case 8:
+                listaPacientes();
                 break;
             default:
                 if (op != 9)
@@ -231,13 +233,30 @@ int main() {
 
 void listaPacientes() {
 
-    for (i = 0; i < MAXREG; i++) {
-        printf("%d. ", i + 1);
-        puts(pacientes[i].nomePaciente);
+    cont = 0;
+
+    pacienteBin = fopen("paciente4.dat", "rb");
+
+    while (cont < MAXREG && fread(&pacientes[cont], REG4, 1, pacienteBin) == 1) {
+
+        if (cont == 0)
+
+            puts("Lista de Pacientes:");
+
+
+        printf("%d - %s, %d anos\n",cont + 1, pacientes[cont].nomePaciente, pacientes[cont].idade);
+
+
+
+        cont++;
+
     }
+
+    fclose(pacienteBin);
 
 
 }
+
 
 
 
@@ -246,7 +265,7 @@ void sair() {
     printf("Você deseja sair deste cadastramento? (S/N)\n");
     scanf(" %c",&ok);
     if (ok == 'S' || ok == 's')
-        i = MAXREG;
+        cont = MAXREG;
 
 }
 
@@ -255,13 +274,15 @@ void sair() {
 void limparBuffer() {
 
     char c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    while ((c = getchar()) != '\n' && c != EOF) {
+
+    }
 
 }
 
 
 
-void doenca1() {
+int doenca1() {
 
 
     for(i = contDoencas; i < MAXREG; i++) {
@@ -304,32 +325,34 @@ void doenca1() {
         sair();
         limparBuffer();
     }
-
+    return 0;
 }
 
 
 
 int sintoma2() {
 
-    sintomasArq = fopen("sintoma2.dat","a+b");
+    cont = 0;
 
-    if (sintomasArq == NULL) {
+    sintomaBin = fopen("sintoma2.dat","a+b");
+
+    if (sintomaBin == NULL) {
         printf("Nao foi possivel abrir o arquivo\n");
         fputs("Nao foi possivel abrir o arquivo\n",stderr);
         getchar();
         return 1;
     }
 
-    rewind(sintomasArq);
+    rewind(sintomaBin);
 
-    while (cont < MAXREG && fread(&sintomas[cont], REG2, 1, sintomasArq) == 1) {
+    while (cont < MAXREG && fread(&sintomas[cont], REG2, 1, sintomaBin) == 1) {
 
         if (cont == 0)
 
             puts("Atuais Sintomas Cadastrados:");
 
 
-        printf("CodID: %d\n%d\nDescricao:%s\n",sintomas[cont].codID, sintomas[cont].nivel, sintomas[cont].descricao);
+        printf("CodID: %d\nNivel: %d\nDescricao:%s\n",sintomas[cont].codID, sintomas[cont].nivel, sintomas[cont].descricao);
 
 
 
@@ -339,13 +362,11 @@ int sintoma2() {
 
     //o que vai ficar realmente
 
-    printf("Já foram cadastrados [%d] registros de sintomas.\n",cont);
+    printf("Cadastrados [%d] registros de sintomas.\n", cont);
 
     contArq = cont;
 
-    if (cont == MAXREG)
-
-    {
+    if (cont == MAXREG) {
 
         fputs("O Registro está cheio.\n", stderr);
 
@@ -357,9 +378,7 @@ int sintoma2() {
 
 
 
-    while (cont < MAXREG)
-
-    {
+    while (cont < MAXREG) {
 
         sintomas[cont].codID = cont + 1;
         printf("Codigo de identificacao: %d\n",sintomas[cont].codID);
@@ -393,6 +412,8 @@ int sintoma2() {
 
 
         cont++;
+        contSair = cont;
+
         if (cont != MAXREG)
 
             sair();
@@ -401,24 +422,26 @@ int sintoma2() {
 
     }
 
-    if (cont > 0)
+    cont = contSair;
 
-    {
+    if (cont > 0) {
+
         //preciso pra alguma coisa talvez
-        puts("Aqui esta a lista de Sintomas cadastrados:");
+        puts("Lista de Sintomas cadastrados:");
 
         for (i = 0; i < cont; i++)
 
             printf("CodID: %d\n%d\nDescricao:%s\n",sintomas[i].codID, sintomas[i].nivel, sintomas[i].descricao);
 
-        total = fwrite(&sintomas[contArq], REG2, cont - contArq, sintomasArq);
-        if (total != cont) {
+        total = fwrite(&sintomas[contArq], REG2, cont - contArq, sintomaBin);
+
+        if (total != cont - contArq) {
             printf("Erro na escritura\n");
 
         }
     }
 
-    fclose(sintomasArq);
+    fclose(sintomaBin);
 
     return 0;
 }
@@ -501,7 +524,7 @@ int sintoma2() {
 
 
 
-void medico3() {
+int medico3() {
 
     int cod, op;
     int contAtendidos = 0;
@@ -600,96 +623,163 @@ void medico3() {
         sair();
         limparBuffer();
     }
-
+    return 0;
 }
 
 
 
-void paciente4() {
+int paciente4() {
 
     char ok;
 
-    for(i = contPacientes; i < MAXREG; i++) {
+    cont = 0;
 
-        pacientes[i].codPaciente = i + 1;
-        printf("Código do Paciente: '%d'\n", pacientes[i].codPaciente);
+    pacienteBin = fopen("paciente4.dat","a+b");
+
+    if (pacienteBin == NULL) {
+        printf("Nao foi possivel abrir o arquivo\n");
+        fputs("Nao foi possivel abrir o arquivo\n",stderr);
+        getchar();
+        return 1;
+    }
+
+    rewind(pacienteBin);
+
+    while (cont < MAXREG && fread(&pacientes[cont], REG4, 1, pacienteBin) == 1) {
+
+        if (cont == 0)
+
+            puts("Atuais Pacientes Cadastrados:");
+
+        printf("Codigo: '%d'\nNome: %s\n%d anos\n%c\n",pacientes[cont].codPaciente, pacientes[cont].nomePaciente, pacientes[cont].idade, pacientes[cont].genero);
+
+        cont++;
+
+    }
+
+    //o que vai ficar realmente
+
+    printf("Cadastrados [%d] registros de pacientes.\n",cont);
+
+    contArq = cont;
+
+    if (cont == MAXREG) {
+
+        fputs("O Registro está cheio.\n", stderr);
+
+        return 2;
+
+    }
+
+    limparBuffer();
+
+    while (cont < MAXREG) {
+
+        pacientes[cont].codPaciente = cont + 1;
+        printf("Código do Paciente: '%d'\n", pacientes[cont].codPaciente);
 
         printf("Digite o CPF do paciente: \n");
-        scanf("%s", pacientes[i].CPF);
+        scanf("%s", pacientes[cont].CPF);
         limparBuffer();
         printf("Digite o nome do paciente: \n");
-        gets(pacientes[i].nomePaciente);
+        gets(pacientes[cont].nomePaciente);
         printf("Digite a idade do paciente: \n");
-        scanf("%d", &pacientes[i].idade);
+        scanf("%d", &pacientes[cont].idade);
         limparBuffer();
         printf("Qual o genero do paciente? (M/F) \n");
-        scanf("%c", &pacientes[i].genero);
+        scanf("%c", &pacientes[cont].genero);
         limparBuffer();
         printf("Digite o telefone do paciente: \n");
-        scanf("%s", pacientes[i].telefone);
+        scanf("%s", pacientes[cont].telefone);
         limparBuffer();
 
         printf("Digite o endereco do paciente: \n");
         printf("Rua:\n");
-        gets(pacientes[i].endereco.rua);
+        gets(pacientes[cont].endereco.rua);
         printf("Numero:\n");
-        scanf("%d", &pacientes[i].endereco.numero);
+        scanf("%d", &pacientes[cont].endereco.numero);
         limparBuffer();
         printf("Bairro:\n");
-        gets(pacientes[i].endereco.bairro);
-        limparBuffer();
+        gets(pacientes[cont].endereco.bairro);
         printf("Cidade:\n");
-        gets(pacientes[i].endereco.cidade);
-        limparBuffer();
+        gets(pacientes[cont].endereco.cidade);
         printf("Estado:\n");
-        gets(pacientes[i].endereco.estado);
-        limparBuffer();
+        gets(pacientes[cont].endereco.estado);
+
         printf("CEP:\n");
-        scanf("%s", pacientes[i].endereco.CEP);
+        scanf("%s", pacientes[cont].endereco.CEP);
         limparBuffer();
 
         printf("Predisposicao Genetica do paciente:\n");
-        gets(pacientes[i].predGenetica);
-        limparBuffer();
+        gets(pacientes[cont].predGenetica);
         printf("Há algum risco associado ao paciente?\nJá toma algum medicamento?\nEstá exposto a agentes nocivos à saúde?\nTrabalha em ambiente insalubre?\nDentre outros\n");
         printf("(S/N)\n");
         scanf(" %c", &ok);
+        limparBuffer();
 
         if (ok == 's' || ok == 'S') {
 
             printf("Toma algum medicamento?\n");
-            fflush(stdin);
-            gets(pacientes[i].risco.medicamento);
+            gets(pacientes[cont].risco.medicamento);
             printf("Está exposto a agentes nocivos à saúde?\n");
-            fflush(stdin);
-            gets(pacientes[i].risco.agentes);
+            gets(pacientes[cont].risco.agentes);
             printf("Trabalha em ambiente insalubre?\n");
-            fflush(stdin);
-            gets(pacientes[i].risco.ambiente);
+            gets(pacientes[cont].risco.ambiente);
             printf("Outros?\n");
-            fflush(stdin);
-            gets(pacientes[i].risco.outros);
+            gets(pacientes[cont].risco.outros);
 
         }
 
         printf("Quais exames ja foram realizados?\n");
-        fflush(stdin);
-        gets(pacientes[i].exames);
+        gets(pacientes[cont].exames);
         printf("Quais os resultados de exames anteriores?\n");
-        fflush(stdin);
-        gets(pacientes[i].resultados);
+        gets(pacientes[cont].resultados);
 
+
+        //tirar depois (talvez)
         contPacientes += 1;
-        sair();
+
+
+        cont++;
+        contSair = cont;
+
+        if (cont != MAXREG)
+
+            sair();
+
         limparBuffer();
 
     }
 
+    cont = contSair;
+
+    if (cont > 0) {
+
+        //preciso pra alguma coisa talvez
+        puts("Lista de Pacientes cadastrados:");
+
+        for (i = 0; i < cont; i++)
+
+            printf("Codigo: '%d'\nNome: %s\n%d anos\n%c\n",pacientes[i].codPaciente, pacientes[i].nomePaciente, pacientes[i].idade, pacientes[i].genero);
+
+
+        total = fwrite(&pacientes[contArq], REG4, cont - contArq, pacienteBin);
+
+        if (total != cont - contArq) {
+
+            printf("Erro na escritura\n");
+
+        }
+    }
+
+    fclose(pacienteBin);
+
+    return 0;
 }
 
 
 
-void tratamento5() {
+int tratamento5() {
 
     char ok;
     int cod, op;
@@ -843,11 +933,12 @@ void tratamento5() {
         sair();
         limparBuffer();
     }
+    return 0;
 }
 
 
 
-void medicamento6() {
+int medicamento6() {
 
     for (i = 0; i < MAXREG; i++) {
 
@@ -871,8 +962,12 @@ void medicamento6() {
     }
 
     sair();
+    return 0;
 }
-void exame7() {
+
+
+
+int exame7() {
 
     for (i = 0; i < MAXREG; i++) {
 
@@ -908,4 +1003,5 @@ void exame7() {
         sair();
         limparBuffer();
     }
+    return 0;
 }
