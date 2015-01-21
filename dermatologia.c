@@ -20,7 +20,7 @@
 
 long int total;
 int cont;
-int contArq;
+int contBin;
 int i, j;
 int contPacientes = 0;
 int contMedicos = 0;
@@ -96,7 +96,7 @@ struct reg6 {
 //exame7()
 struct reg7 {
     int cod_exame, pgto;
-    char nome_exame[20];
+    char nome_exame[TAM1];
 };
 
 
@@ -234,7 +234,14 @@ void listaPacientes() {
 
     cont = 0;
 
+    //será necessario?
+
     pacienteBin = fopen("paciente4.dat", "rb");
+
+
+    //
+
+    rewind(pacienteBin);
 
     while (cont < MAXREG && fread(&pacientes[cont], REG4, 1, pacienteBin) == 1) {
 
@@ -243,7 +250,7 @@ void listaPacientes() {
             puts("Lista de Pacientes:");
 
 
-        printf("%d - %s, %d anos\n",cont + 1, pacientes[cont].nomePaciente, pacientes[cont].idade);
+        printf("%d. %s, %d anos\n",cont + 1, pacientes[cont].nomePaciente, pacientes[cont].idade);
 
 
 
@@ -336,7 +343,7 @@ int sintoma2() {
     sintomaBin = fopen("sintoma2.dat","a+b");
 
     if (sintomaBin == NULL) {
-        printf("Nao foi possivel abrir o arquivo\n");
+
         fputs("Nao foi possivel abrir o arquivo\n",stderr);
         getchar();
         return 1;
@@ -363,7 +370,7 @@ int sintoma2() {
 
     printf("Cadastrados [%d] registros de sintomas.\n", cont);
 
-    contArq = cont;
+    contBin = cont;
 
     if (cont == MAXREG) {
 
@@ -384,8 +391,7 @@ int sintoma2() {
         puts("Descreva os Sintomas:");
         gets(sintomas[cont].descricao);
 
-        printf("Informe o nivel de severidade da doenca:\n");
-
+        printf("Informe o nivel de severidade do sintoma:\n");
 
         do {
 
@@ -432,9 +438,9 @@ int sintoma2() {
 
             printf("CodID: %d\n%d\nDescricao:%s\n",sintomas[i].codID, sintomas[i].nivel, sintomas[i].descricao);
 
-        total = fwrite(&sintomas[contArq], REG2, cont - contArq, sintomaBin);
+        total = fwrite(&sintomas[contBin], REG2, cont - contBin, sintomaBin);
 
-        if (total != cont - contArq) {
+        if (total != cont - contBin) {
             printf("Erro na escritura\n");
 
         }
@@ -636,7 +642,7 @@ int paciente4() {
     pacienteBin = fopen("paciente4.dat","a+b");
 
     if (pacienteBin == NULL) {
-        printf("Nao foi possivel abrir o arquivo\n");
+
         fputs("Nao foi possivel abrir o arquivo\n",stderr);
         getchar();
         return 1;
@@ -660,7 +666,7 @@ int paciente4() {
 
     printf("Cadastrados [%d] registros de pacientes.\n",cont);
 
-    contArq = cont;
+    contBin = cont;
 
     if (cont == MAXREG) {
 
@@ -735,10 +741,6 @@ int paciente4() {
         gets(pacientes[cont].resultados);
 
 
-        //tirar depois (talvez)
-        contPacientes += 1;
-
-
         cont++;
 
         if (cont != MAXREG) {
@@ -761,9 +763,9 @@ int paciente4() {
             printf("Codigo: '%d'\nNome: %s\n%d anos\n%c\n",pacientes[i].codPaciente, pacientes[i].nomePaciente, pacientes[i].idade, pacientes[i].genero);
 
 
-        total = fwrite(&pacientes[contArq], REG4, cont - contArq, pacienteBin);
+        total = fwrite(&pacientes[contBin], REG4, cont - contBin, pacienteBin);
 
-        if (total != cont - contArq) {
+        if (total != cont - contBin) {
 
             printf("Erro na escritura\n");
 
