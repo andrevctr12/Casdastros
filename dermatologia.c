@@ -11,13 +11,11 @@
 #include <stdlib.h>
 
 
-#define MAXREG 4
+#define MAXREG 5
 #define TAM1 50
 #define TAM2 100
 #define TAM3 300
 #define TAM4 500
-
-
 
 //CONTADORES
 
@@ -25,13 +23,6 @@
 int i, j;
 long int total;
 char ok;
-
-
-//MARCAS
-
-int marca1 = 0;
-int marca3 = 0;
-int marca4 = 0;
 
 
 //REGISTROS
@@ -102,30 +93,6 @@ struct reg7 {
 };
 
 
-//codigo__________()
-//int codDoenca[MAXREG];
-//int codSintoma[MAXREG];
-//int codMedico[MAXREG];
-//int codPaciente[MAXREG];
-//int codTratamento[MAXREG];
-//int codMedicamento[MAXREG];
-//int codExame[MAXREG];
-
-struct regCod1 {
-    int codDoenca[MAXREG];
-    int codSintoma[MAXREG];
-    int codMedico[MAXREG];
-    int codPaciente[MAXREG];
-    int codTratamento[MAXREG];
-    int codMedicamento[MAXREG];
-    int codExame[MAXREG];
-};
-
-struct regCod {
-    struct regCod1 cod[MAXREG];
-};
-
-
 //DECLARAÇÃO DE REGISTROS
 
 struct reg1 doencas[MAXREG];
@@ -136,14 +103,9 @@ struct reg5 tratamentos[MAXREG];
 struct reg6 medicamentos[MAXREG];
 struct reg7 exames[MAXREG];
 
-struct regCod codigos[8];
 
 
 //TAMANHO DE REGISTROS
-
-
-int REGCOD = sizeof(struct regCod);
-
 
 int REG[8] = {0,
     sizeof (struct reg1),
@@ -172,9 +134,7 @@ void limparBuffer();
 
 //PROTÓTIPO DE FUNÇÕES ESPECIAIS
 
-int codigoLer();
-int codigoSalvar();
-int codigoPaciente(int, int, int, int);
+int codigoPaciente(int, int, int);
 
 
 //ARQUIVOS
@@ -185,22 +145,26 @@ FILE *Bin[8];
 //PROTÓTIPO DE FUNÇÕES DE ABERTURA DE ARQUIVOS
 
 int abrirDoenca1();
+int abrirSintoma2();
 int abrirMedico3();
 int abrirPaciente4();
-
+int abrirTratamento5();
+int abrirMedicamento6();
+int abrirExame7();
 
 int main() {
 
+    int marca1 = abrirDoenca1();
+    int marca3 = abrirMedico3();
+    int marca4 = abrirPaciente4();
     int op, marca = 0;
 
     if (marca == 0) {
 
-        codigoLer();
         marca = 1;
 
     }
 
-    codigoSalvar();
 
     do {
         printf("\nEscolha a opcao desejada:\n");
@@ -227,7 +191,7 @@ int main() {
                 sintoma2();
                 break;
             case 3:
-                if (marca4 == abrirPaciente4()) {
+                if (marca4 == 0) {
 
                     printf("Você não tem nenhum paciente cadastrado. Cadastre para continuar!\n\n");
                     paciente4();
@@ -252,6 +216,7 @@ int main() {
 
                 }
                 else if (marca4 == 0) {
+
                     printf("Você não tem nenhum paciente cadastrado. Cadastre para continuar!\n\n");
                     paciente4();
                     marca4 = 1;
@@ -277,70 +242,16 @@ int main() {
     } while (op != 9);
 
 
-    codigoSalvar();
 
     return 0;
 }
 
 
-int codigoLer() {
-    const int numeroFuncao = 0;
-
-    int contCodigo = 0;
-
-    Bin[numeroFuncao] = fopen("codigo.bin","a+b");
-
-    if (Bin[numeroFuncao] == NULL) {
-
-        fputs("Nao foi possivel abrir o arquivo\n",stderr);
-        return 1;
-
-    }
-
-    rewind(Bin[numeroFuncao]);
-
-    while (contCodigo < MAXREG && fread(&codigos[contCodigo], REGCOD, 1, Bin[numeroFuncao]) == 1) {
-
-        contCodigo++;
-
-    }
-
-    fclose(Bin[numeroFuncao]);
-
-    return 0;
-}
-int codigoSalvar() {
-    const int numeroFuncao = 0;
-
-
-    Bin[numeroFuncao] = fopen("codigo.bin","a+b");
-
-    if (Bin[numeroFuncao] == NULL) {
-
-        fputs("Nao foi possivel abrir o arquivo\n",stderr);
-        return 1;
-
-    }
-
-    total = fwrite(&codigos[0], REGCOD, 8, Bin[numeroFuncao]);
-
-
-    if (total != 8)
-
-        printf("Erro na escritura\n");
-
-
-    fclose(Bin[numeroFuncao]);
-
-
-
-    return 0;
-}
-int codigoPaciente(int numeroFuncao, int cod, int contPaciente, int cont) {
+int codigoPaciente(int cod, int contPaciente, int cont3) {
 
     for (i = 0; i < contPaciente; i++) {
 
-        if (cod == codigos[numeroFuncao].cod[cont].codPaciente[i]) {
+        if (cod == medicos[cont3].codPaciente[i]) {
 
             puts("Paciente ja cadastrado no registro do medico");
 
@@ -452,11 +363,11 @@ int doenca1() {
 }
 
 int abrirSintoma2() {
-    const int numeroFuncao = 4;
+    const int numeroFuncao = 2;
 
-    int cont4 = 0;
+    int cont2 = 0;
 
-    Bin[numeroFuncao] = fopen("paciente4.bin","a+b");
+    Bin[numeroFuncao] = fopen("sintoma2.bin","a+b");
 
     if (Bin[numeroFuncao] == NULL) {
 
@@ -466,9 +377,9 @@ int abrirSintoma2() {
 
     rewind(Bin[numeroFuncao]);
 
-    while (cont4 < MAXREG && fread(&pacientes[cont4], REG[numeroFuncao], 1, Bin[numeroFuncao]) == 1) {
+    while (cont2 < MAXREG && fread(&sintomas[cont2], REG[numeroFuncao], 1, Bin[numeroFuncao]) == 1) {
 
-        cont4++;
+        cont2++;
 
     }
 
@@ -476,7 +387,7 @@ int abrirSintoma2() {
     fclose(Bin[numeroFuncao]);
 
 
-    return cont4;
+    return cont2;
 
 
 
@@ -484,35 +395,8 @@ int abrirSintoma2() {
 int sintoma2() {
     const int numeroFuncao = 2;
 
-    int cont2 = 0;
-    int contBin;
-
-    Bin[numeroFuncao] = fopen("sintoma2.bin","a+b");
-
-    if (Bin[numeroFuncao] == NULL) {
-
-        fputs("Nao foi possivel abrir o arquivo\n",stderr);
-        return 1;
-    }
-
-    rewind(Bin[numeroFuncao]);
-
-    while (cont2 < MAXREG && fread(&sintomas[cont2], REG[numeroFuncao], 1, Bin[numeroFuncao]) == 1) {
-
-        if (cont2 == 0)
-
-            puts("Atuais Sintomas Cadastrados:");
-
-
-        printf("codNum: %d\nNivel: %d\nDescricao:%s\n",sintomas[cont2].codNum, sintomas[cont2].nivel, sintomas[cont2].descricao);
-
-
-
-        cont2++;
-
-    }
-
-    //o que vai ficar realmente
+    int cont2 = abrirSintoma2();
+    int contBin = cont2;
 
     printf("Cadastrados [%d] registros de sintomas.\n", cont2);
 
@@ -522,12 +406,9 @@ int sintoma2() {
 
         fputs("O Registro está cheio.\n", stderr);
 
-        return 2;
+        return cont2;
 
     }
-
-    limparBuffer();
-
 
 
     while (cont2 < MAXREG) {
@@ -543,6 +424,7 @@ int sintoma2() {
 
             printf("1. Baixo \n2. Medio \n3. Alto \n");
             scanf("%d",&sintomas[cont2].nivel);
+            limparBuffer();
 
             switch (sintomas[cont2].nivel) {
                 case 1:
@@ -582,7 +464,17 @@ int sintoma2() {
 
         for (i = 0; i < cont2; i++)
 
-            printf("codNum: %d\n%d\nDescricao:%s\n",sintomas[i].codNum, sintomas[i].nivel, sintomas[i].descricao);
+            printf("%d - %d, %s\n",sintomas[i].codNum, sintomas[i].nivel, sintomas[i].descricao);
+
+
+        Bin[numeroFuncao] = fopen("sintoma2.bin","a+b");
+
+        if (Bin[numeroFuncao] == NULL) {
+
+            fputs("Nao foi possivel abrir o arquivo\n",stderr);
+            return -2;
+        }
+
 
         total = fwrite(&sintomas[contBin], REG[numeroFuncao], cont2 - contBin, Bin[numeroFuncao]);
 
@@ -706,7 +598,7 @@ int medico3() {
             scanf("%d",&codRegistro);
             limparBuffer();
 
-            if (codigoPaciente(numeroFuncao, codRegistro, contPaciente, cont3) == 1)
+            if (codigoPaciente(codRegistro, contPaciente, cont3) == 1)
 
                 continue;
 
@@ -724,7 +616,7 @@ int medico3() {
                             printf("Digite outro codigo de Paciente: ");
                             scanf("%d", &codRegistro);
                             limparBuffer();
-                            if (codigoPaciente(numeroFuncao, codRegistro, contPaciente, cont3) == 1) {
+                            if (codigoPaciente(codRegistro, contPaciente, cont3) == 1) {
                                 goto continuar;
                             }
                             break;
@@ -732,7 +624,7 @@ int medico3() {
                             printf("Digite outro codigo de Paciente: ");
                             scanf("%d", &codRegistro);
                             limparBuffer();
-                            if (codigoPaciente(numeroFuncao, codRegistro, contPaciente, cont3) == 1) {
+                            if (codigoPaciente(codRegistro, contPaciente, cont3) == 1) {
                                 goto continuar;
                             }
                             break;
@@ -752,7 +644,9 @@ int medico3() {
 
             printf("Nome do paciente: %s\n",pacientes[codRegistro - 1].nomePaciente);
 
-            codigos[numeroFuncao].cod[cont3].codPaciente[contPaciente] = codRegistro;
+            medicos[cont3].codPaciente[contPaciente] = codRegistro;
+
+            //codigos[numeroFuncao].cod[cont3].codPaciente[contPaciente] = codRegistro;
 
             contPaciente++;
 
@@ -781,7 +675,7 @@ int medico3() {
 
         for (i = 0; i < contPaciente; i++) {
 
-            codRegistro = codigos[numeroFuncao].cod[cont3].codPaciente[i];
+            codRegistro = medicos[cont3].codPaciente[i];
 
             printf("%d. %s, %d anos\n", codRegistro, pacientes[codRegistro - 1].nomePaciente, pacientes[codRegistro].idade);
 
@@ -1019,9 +913,9 @@ int abrirTratamento5() {
 int tratamento5() {
     const int numeroFuncao = 5;
     int codRegistro, op;
-    int contDoenca;
-    int contPaciente;
-    int contMedico;
+    int contDoenca = abrirDoenca1();
+    int contPaciente = abrirPaciente4();
+    int contMedico = abrirMedico3();
 
     for (i = 0; i < MAXREG; i++) {
 
@@ -1032,29 +926,27 @@ int tratamento5() {
         printf("Informe o codigo de identificacao da doenca: ");
         scanf("%d",&codRegistro);
 
-        codRegistro = codRegistro - 1;
-        if (contDoenca <= codRegistro) {
+
+        if (contDoenca < codRegistro) {
             do {
                 printf("Doenca não cadastrada.\n1. Cadastrar?\n2. Digitar outra\n> ");
                 scanf("%d", &op);
                 switch (op) {
                     case 1:
                         doenca1();
-                        marca1 = 1;
+                        //marca1 = 1;
                         printf("Digite outro codigo de doenca: ");
                         scanf("%d", &codRegistro);
-                        codRegistro = codRegistro - 1;
                         break;
                     case 2:
                         printf("Digite outro codigo de doenca: ");
                         scanf("%d", &codRegistro);
-                        codRegistro = codRegistro - 1;
                     default:
-                        if (contDoenca <= codRegistro) {
+                        if (contDoenca < codRegistro) {
                             printf("Digite novamente\n");
                         }
                 }
-            } while (contDoenca <= codRegistro);
+            } while (contDoenca < codRegistro);
 
         }
 
@@ -1066,9 +958,9 @@ int tratamento5() {
         printf("Informe o codigo de identificacao do paciente: ");
         scanf("%d",&codRegistro);
 
-        if(marca4 == 0) {
+        //if(marca4 == 0) {
 
-        }
+        //}
 
         codRegistro = codRegistro - 1;
         if (contPaciente <= codRegistro) {
@@ -1078,7 +970,7 @@ int tratamento5() {
                 switch (op) {
                     case 1:
                         paciente4();
-                        marca4 = 1;
+                        //marca4 = 1;
                         printf("Digite outro codigo de paciente: ");
                         scanf("%d", &codRegistro);
                         codRegistro = codRegistro - 1;
@@ -1112,7 +1004,7 @@ int tratamento5() {
                 switch (op) {
                     case 1:
                         medico3();
-                        marca3 = 1;
+                        //marca3 = 1;
                         printf("Digite outro codigo de medico: ");
                         scanf("%d", &codRegistro);
                         codRegistro = codRegistro - 1;
